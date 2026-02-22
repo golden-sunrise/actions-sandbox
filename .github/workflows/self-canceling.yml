@@ -31,12 +31,14 @@ jobs:
     # Skip the test job if we are just handling a merge group destruction
     # event. In that case, the creation of the run will have canceled the runs
     # for the destroyed group via the concurrency key set above.
-    if: ${{ github.event_name != 'merge_group' || github.event.action != 'destroyed' }}
+    # if: ${{ github.event_name != 'merge_group' || github.event.action != 'destroyed' }}
     steps:
       - uses: actions/checkout@v4
+      - name: Print out the triggering event name
+        run: echo '${{ github.event_name }}'
       - name: Print out the triggering event
         run: echo '${{ toJson(github.event) }}'
       - name: Print out REF
         run: echo '${{ github.ref }}'
-      - name: Wait 10 mins
-        run: sleep 10m
+      - name: Wait 5 mins
+        run: sleep 5m
