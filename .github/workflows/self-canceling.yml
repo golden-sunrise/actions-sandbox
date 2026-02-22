@@ -1,0 +1,42 @@
+name: CI
+permissions: read-all
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  merge_group:
+    types:
+      - checks_requested
+      - destroyed
+
+concurrency:
+  # * If the workflow was triggered by a push, cancel any older runs of this
+  #   workflow on the same branch (because of github.ref).
+  # * If the workflow was triggered by a PR, cancel any older runs of this
+  #   workflow for the same PR (because of github.event.pull_request.number).
+  # * If the workfow was triggered by the creation of a merge group in the
+  #   merge queue, cancel any older runs of this workflow for the same merge
+  #   group (because of github.event.merge_group.head_ref).
+  # * If none of the above, fall back to the run ID, which is unique, so
+  #   nothing gets canceled.
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{
+         github.event.pull_request.number || github.event.merge_group.head_ref
+         || github.ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  test-job:
+    runs-on: ubuntu-latest
+    # Skip the test job if we are just handling a merge group destruction
+    # event. In that case, the creation of the run will have canceled the runs
+    # for the destroyed group via the concurrency key set above.
+    if: ${{ github.event_name != "merge_group" || github.event.action != "destroyed" }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Print out the triggering event
+        run: echo ${{ toJson(github.event) }}
+      - name: Print out REF
+        run: echo ${{ github.ref }}
+      - name: Wait 10 mins
+        run: sleep 10m
