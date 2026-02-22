@@ -35,8 +35,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Print out the triggering event
-        run: echo "${{ toJson(github.event) }}"
+        run: echo '${{ toJson(github.event) }}'
       - name: Print out REF
-        run: echo "${{ github.ref }}"
+        run: echo '${{ github.ref }}'
       - name: Wait 10 mins
         run: sleep 10m
