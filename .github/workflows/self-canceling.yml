@@ -37,9 +37,9 @@ jobs:
     # event. In that case, the creation of the run will have canceled the runs
     # for the destroyed group or PR via the concurrency key set above.
     if: ${{ ! (
-      (github.event_name == 'merge_group' && github.event.action == 'destroyed')
-      || (github.event_name == 'pull_request' && github.event.action == 'closed')
-    ) }}
+        (github.event_name == 'merge_group' && github.event.action == 'destroyed')
+        || (github.event_name == 'pull_request' && github.event.action == 'closed')
+      ) }}
     steps:
       - uses: actions/checkout@v4
       - name: Print out the triggering event name
