@@ -42,11 +42,18 @@ jobs:
       ) }}
     steps:
       - uses: actions/checkout@v4
+        if: github.event_name != 'merge_group'
       - name: Print out the triggering event name
+        if: github.event_name != 'merge_group'
         run: echo '${{ github.event_name }}'
       - name: Print out the triggering event
+        if: github.event_name != 'merge_group'
         run: echo '${{ toJson(github.event) }}'
       - name: Print out REF
+        if: github.event_name != 'merge_group'
         run: echo '${{ github.ref }}'
       - name: Wait 5 mins
+        if: github.event_name != 'merge_group'
         run: sleep 5m
+      - name: Pass if previous steps skipped
+        run: echo "Ensure job passes even if previous steps were skipped"
